@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"sahaj/flight/config"
 	"sahaj/flight/reader"
 	"sahaj/flight/service/flights"
@@ -15,7 +16,7 @@ func main() {
 	csvReader := reader.NewCSVReader(cfg.InputFilePath)
 	csvWriter := writer.NewCSVWriter(cfg.ProcessedTicketsFilePath, cfg.FailedTicketsFilePath)
 	updater := flights.NewUpadter(csvReader, csvWriter, flights.NewCustomValidtor())
-	if err := updater.Update(); err != nil {
+	if err := updater.Update(context.Background()); err != nil {
 		logrus.Error(err)
 	}
 }

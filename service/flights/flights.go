@@ -1,5 +1,7 @@
 package flights
 
-type Flights interface{
-	Update() error
+import "context"
+
+type Flights interface {
+	Update(ctx context.Context) error
 }

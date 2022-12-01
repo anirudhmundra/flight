@@ -17,40 +17,27 @@ func NewCSVWriter(validTicketsFilePath, invalidTicketsFilePath string) Writer {
 		invalidTicketsFilePath: invalidTicketsFilePath}
 }
 
-func (csv csvWriter) Write(processedTickets []dto.ValidTicketCSV, failedTickets []dto.InvalidTicketCSV) error {
-	if err := writeProcessedToCSV(csv.validTicketsFilePath, processedTickets); err != nil {
+func (csv csvWriter) WriteValidTickets(tickets []dto.ValidTicketCSV) error {
+	file, err := os.Create(csv.validTicketsFilePath)
+	if err != nil {
 		return err
 	}
-	if err := writeFailedToCSV(csv.invalidTicketsFilePath, failedTickets); err != nil {
+	defer file.Close()
+
+	if err := gocsv.MarshalFile(&tickets, file); err != nil {
 		return err
 	}
 	return nil
 }
 
-func writeProcessedToCSV(fileName string, tickets []dto.ValidTicketCSV) error {
-	file, err := createNewFile(fileName)
+func (csv csvWriter) WriteInvalidTickets(tickets []dto.InvalidTicketCSV) error {
+	file, err := os.Create(csv.invalidTicketsFilePath)
 	if err != nil {
 		return err
 	}
 	defer file.Close()
-
-	return gocsv.MarshalFile(&tickets, file)
-}
-
-func writeFailedToCSV(fileName string, tickets []dto.InvalidTicketCSV) error {
-	file, err := createNewFile(fileName)
-	if err != nil {
+	if err := gocsv.MarshalFile(&tickets, file); err != nil {
 		return err
 	}
-	defer file.Close()
-
-	return gocsv.MarshalFile(&tickets, file)
-}
-
-func createNewFile(fileName string) (*os.File, error) {
-	err := os.Remove(fileName)
-	if err != nil {
-		return nil, err
-	}
-	return os.OpenFile(fileName, os.O_RDWR|os.O_CREATE, os.ModePerm)
+	return nil
 }

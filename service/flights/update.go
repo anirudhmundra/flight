@@ -1,11 +1,13 @@
 package flights
 
 import (
+	"context"
 	"sahaj/flight/dto"
 	"sahaj/flight/reader"
 	"sahaj/flight/writer"
 
 	"github.com/sirupsen/logrus"
+	"golang.org/x/sync/errgroup"
 )
 
 type updater struct {
@@ -24,7 +26,7 @@ func NewUpadter(reader reader.Reader,
 	}
 }
 
-func (u updater) Update() error {
+func (u updater) Update(ctx context.Context) error {
 	tickets, err := u.reader.Read()
 	if err != nil {
 		logrus.Error(err)
@@ -32,22 +34,29 @@ func (u updater) Update() error {
 	}
 	transformedTickets := mapTicketCSVToTicketEntity(tickets)
 
-	failedTickets := []dto.InvalidTicketCSV{}
-	processedTickets := []dto.ValidTicketCSV{}
+	invalidTickets := []dto.InvalidTicketCSV{}
+	validTickets := []dto.ValidTicketCSV{}
 	for index, ticket := range transformedTickets {
 		if err := u.validator.Validate(ticket); err != nil {
 			logrus.WithField("first_name", tickets[index].FirstName).
 				WithField("last_name", tickets[index].LastName).
 				Info(err)
 
-			failedTickets = append(failedTickets, mapTicketEntityToFailedTicketCSV(tickets[index], err.Error()))
+			invalidTickets = append(invalidTickets, mapTicketEntityToFailedTicketCSV(tickets[index], err.Error()))
 			continue
 		}
-		processedTickets = append(processedTickets, mapTicketEntityToProcessedTicketCSV(ticket, getDiscountCodes.list[ticket.FareClass]))
+		validTickets = append(validTickets, mapTicketEntityToProcessedTicketCSV(ticket, getDiscountCodes.list[ticket.FareClass]))
 	}
 
-	if err := u.writer.Write(processedTickets, failedTickets); err != nil {
-		return err
-	}
-	return nil
+	errs, _ := errgroup.WithContext(ctx)
+
+	errs.Go(func() error {
+		return u.writer.WriteValidTickets(validTickets)
+	})
+
+	errs.Go(func() error {
+		return u.writer.WriteInvalidTickets(invalidTickets)
+	})
+
+	return errs.Wait()
 }

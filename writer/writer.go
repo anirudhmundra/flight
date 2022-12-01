@@ -5,5 +5,6 @@ import (
 )
 
 type Writer interface {
-	Write(processedTickets []dto.ValidTicketCSV, failedTickets []dto.InvalidTicketCSV) error
+	WriteValidTickets(tickets []dto.ValidTicketCSV) error
+	WriteInvalidTickets(tickets []dto.InvalidTicketCSV) error
 }

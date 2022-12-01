@@ -34,16 +34,30 @@ func (m *MockWriter) EXPECT() *MockWriterMockRecorder {
 	return m.recorder
 }
 
-// Write mocks base method.
-func (m *MockWriter) Write(processedTickets []dto.ValidTicketCSV, failedTickets []dto.InvalidTicketCSV) error {
+// WriteInvalidTickets mocks base method.
+func (m *MockWriter) WriteInvalidTickets(tickets []dto.InvalidTicketCSV) error {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Write", processedTickets, failedTickets)
+	ret := m.ctrl.Call(m, "WriteInvalidTickets", tickets)
 	ret0, _ := ret[0].(error)
 	return ret0
 }
 
-// Write indicates an expected call of Write.
-func (mr *MockWriterMockRecorder) Write(processedTickets, failedTickets interface{}) *gomock.Call {
+// WriteInvalidTickets indicates an expected call of WriteInvalidTickets.
+func (mr *MockWriterMockRecorder) WriteInvalidTickets(tickets interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Write", reflect.TypeOf((*MockWriter)(nil).Write), processedTickets, failedTickets)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WriteInvalidTickets", reflect.TypeOf((*MockWriter)(nil).WriteInvalidTickets), tickets)
+}
+
+// WriteValidTickets mocks base method.
+func (m *MockWriter) WriteValidTickets(tickets []dto.ValidTicketCSV) error {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "WriteValidTickets", tickets)
+	ret0, _ := ret[0].(error)
+	return ret0
+}
+
+// WriteValidTickets indicates an expected call of WriteValidTickets.
+func (mr *MockWriterMockRecorder) WriteValidTickets(tickets interface{}) *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WriteValidTickets", reflect.TypeOf((*MockWriter)(nil).WriteValidTickets), tickets)
 }

@@ -1,0 +1,2 @@
+First_name,Last_name,PNR,Fare_class,Travel_date,Pax,Ticketing_date,Email,Mobile_phone,Booked_cabin,Error
+firstname,lastname,1AB2C3,A,2021-01-01,12,2022-01-01,firstname@abc.com,9876543210,Economy1,CabinCategory invalid
