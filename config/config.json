@@ -1,5 +1,5 @@
 {
     "inputFilePath": "testdata/tickets.csv",
-    "processedTicketsFilePath": "testdata/output/processed_tickets.csv",
-    "failedTicketsFilePath": "testdata/output/failed_tickets.csv"
+    "validTicketsFilePath": "testdata/output/valid_tickets.csv",
+    "invalidTicketsFilePath": "testdata/output/invalid_tickets.csv"
 }

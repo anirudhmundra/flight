@@ -6,9 +6,9 @@ import (
 )
 
 type FlightsConfig struct {
-	InputFilePath            string `json:"inputFilePath"`
-	ProcessedTicketsFilePath string `json:"processedTicketsFilePath"`
-	FailedTicketsFilePath    string `json:"failedTicketsFilePath"`
+	InputFilePath          string `json:"inputFilePath"`
+	ValidTicketsFilePath   string `json:"validTicketsFilePath"`
+	InvalidTicketsFilePath string `json:"invalidTicketsFilePath"`
 }
 
 func NewConfig() FlightsConfig {

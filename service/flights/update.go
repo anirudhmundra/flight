@@ -42,10 +42,10 @@ func (u updater) Update(ctx context.Context) error {
 				WithField("last_name", tickets[index].LastName).
 				Info(err)
 
-			invalidTickets = append(invalidTickets, mapTicketEntityToFailedTicketCSV(tickets[index], err.Error()))
+			invalidTickets = append(invalidTickets, mapTicketEntityToInvalidTicketCSV(tickets[index], err.Error()))
 			continue
 		}
-		validTickets = append(validTickets, mapTicketEntityToProcessedTicketCSV(ticket, getDiscountCodes.list[ticket.FareClass]))
+		validTickets = append(validTickets, mapTicketEntityToValidTicketCSV(ticket, getDiscountCodes.list[ticket.FareClass]))
 	}
 
 	errs, _ := errgroup.WithContext(ctx)

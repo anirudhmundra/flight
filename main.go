@@ -14,7 +14,7 @@ func main() {
 
 	cfg := config.NewConfig()
 	csvReader := reader.NewCSVReader(cfg.InputFilePath)
-	csvWriter := writer.NewCSVWriter(cfg.ProcessedTicketsFilePath, cfg.FailedTicketsFilePath)
+	csvWriter := writer.NewCSVWriter(cfg.ValidTicketsFilePath, cfg.InvalidTicketsFilePath)
 	updater := flights.NewUpadter(csvReader, csvWriter, flights.NewCustomValidtor())
 	if err := updater.Update(context.Background()); err != nil {
 		logrus.Error(err)

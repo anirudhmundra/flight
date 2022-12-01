@@ -25,7 +25,7 @@ func mapTicketCSVToTicketEntity(tickets []dto.TicketCSV) []entities.Ticket {
 	return result
 }
 
-func mapTicketEntityToProcessedTicketCSV(ticket entities.Ticket, discountCode string) dto.ValidTicketCSV {
+func mapTicketEntityToValidTicketCSV(ticket entities.Ticket, discountCode string) dto.ValidTicketCSV {
 	return dto.ValidTicketCSV{
 		FirstName:          ticket.FirstName,
 		LastName:           ticket.LastName,
@@ -45,7 +45,7 @@ func mapTicketEntityToProcessedTicketCSV(ticket entities.Ticket, discountCode st
 	}
 }
 
-func mapTicketEntityToFailedTicketCSV(ticket dto.TicketCSV, errMsg string) dto.InvalidTicketCSV {
+func mapTicketEntityToInvalidTicketCSV(ticket dto.TicketCSV, errMsg string) dto.InvalidTicketCSV {
 	return dto.InvalidTicketCSV{
 		FirstName:          ticket.FirstName,
 		LastName:           ticket.LastName,
