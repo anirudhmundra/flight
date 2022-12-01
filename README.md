@@ -24,8 +24,10 @@ Test
 
 Run
 
+`go run main.go` 
+
+Test files
+
 `inputFile - testData/tickets.csv`
 
 `outputFiles - testData/output/valid_tickets.csv, testData/output/invalid_tickets.csv`
-
-`go run main.go` 
