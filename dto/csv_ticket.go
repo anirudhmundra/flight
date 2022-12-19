@@ -1,6 +1,8 @@
 package dto
 
-import "time"
+import (
+	"time"
+)
 
 type TicketCSV struct {
 	FirstName          string   `csv:"First_name"`
@@ -29,6 +31,10 @@ type ValidTicketCSV struct {
 	Discount           string   `csv:"Discount_code"`
 }
 
+func (t *ValidTicketCSV) SetDiscountCode() {
+	t.Discount = getDiscountCodes.list[t.FareClass]
+}
+
 type InvalidTicketCSV struct {
 	FirstName          string   `csv:"First_name"`
 	LastName           string   `csv:"Last_name"`
@@ -41,6 +47,10 @@ type InvalidTicketCSV struct {
 	MobileNumber       string   `csv:"Mobile_phone"`
 	CabinCategory      string   `csv:"Booked_cabin"`
 	Error              string   `csv:"Error"`
+}
+
+func (t *InvalidTicketCSV) SetError(msg string) {
+	t.Error = msg
 }
 
 type DateTime struct {

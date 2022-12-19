@@ -3,6 +3,7 @@ package flights
 import (
 	"context"
 	"sahaj/flight/dto"
+	"sahaj/flight/entities"
 	"sahaj/flight/reader"
 	"sahaj/flight/writer"
 
@@ -32,21 +33,8 @@ func (u updater) Update(ctx context.Context) error {
 		logrus.Error(err)
 		return err
 	}
-	transformedTickets := mapTicketCSVToTicketEntity(tickets)
 
-	invalidTickets := []dto.InvalidTicketCSV{}
-	validTickets := []dto.ValidTicketCSV{}
-	for index, ticket := range transformedTickets {
-		if err := u.validator.Validate(ticket); err != nil {
-			logrus.WithField("first_name", tickets[index].FirstName).
-				WithField("last_name", tickets[index].LastName).
-				Info(err)
-
-			invalidTickets = append(invalidTickets, mapTicketEntityToInvalidTicketCSV(tickets[index], err.Error()))
-			continue
-		}
-		validTickets = append(validTickets, mapTicketEntityToValidTicketCSV(ticket, getDiscountCodes.list[ticket.FareClass]))
-	}
+	validTickets, invalidTickets := u.validateTickets(mapTicketCSVToTicketEntity(tickets), tickets)
 
 	errs, _ := errgroup.WithContext(ctx)
 
@@ -59,4 +47,33 @@ func (u updater) Update(ctx context.Context) error {
 	})
 
 	return errs.Wait()
+}
+
+func (u updater) validateTickets(transformedTickets []entities.Ticket, tickets []dto.TicketCSV) ([]dto.ValidTicketCSV, []dto.InvalidTicketCSV) {
+	invalidTickets := []dto.InvalidTicketCSV{}
+	validTickets := []dto.ValidTicketCSV{}
+	for index, ticket := range transformedTickets {
+		if err := u.validator.Validate(ticket); err != nil {
+			logrus.WithField("first_name", tickets[index].FirstName).
+				WithField("last_name", tickets[index].LastName).
+				Info(err)
+
+			invalidTickets = append(invalidTickets, createInvalidTicket(tickets[index], err.Error()))
+			continue
+		}
+		validTickets = append(validTickets, createValidTicket(ticket))
+	}
+	return validTickets, invalidTickets
+}
+
+func createValidTicket(ticket entities.Ticket) dto.ValidTicketCSV {
+	validTicket := mapTicketEntityToValidTicketCSV(ticket)
+	validTicket.SetDiscountCode()
+	return validTicket
+}
+
+func createInvalidTicket(ticket dto.TicketCSV, errMsg string) dto.InvalidTicketCSV {
+	invalidTicket := mapTicketEntityToInvalidTicketCSV(ticket)
+	invalidTicket.SetError(errMsg)
+	return invalidTicket
 }

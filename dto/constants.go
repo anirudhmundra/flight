@@ -1,4 +1,4 @@
-package flights
+package dto
 
 const (
 	OFFER20 = "OFFER_20"
